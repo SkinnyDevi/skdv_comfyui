@@ -72,6 +72,32 @@ This extension takes some time to make, and I love working on it and fixing it f
 
 Want to support my development? Donate me over [Paypal](https://paypal.me/skinnydevi)!
 
+## Changelog
+
+### [1.0.1]
+
+Features:
+- Made optional to select a VAE when generating an image
+
+Fixes:
+* Fixes issue [#2](https://github.com/SkinnyDevi/skdv_comfyui/issues/2) where the method to unload models was moved. Thank you [@zboris](https://github.com/zboris)!
+* Added better error messaging when a JSON workflow file is not valid
+* Added support for ComfyUI models and VAEs located in subpaths
+* Fixed a prompt confirmation dialog error where it would appear again when a generation finished
+* Fixed a styling issue for the seed control buttons in the ComfyUI tab
+
+### [1.0.0]
+
+- Initial release.
+
+<!-- <details> -->
+
+<!-- <summary> -->
+<!-- <h3>Past changelog</h3> -->
+<!-- </summary> -->
+
+<!-- </details> -->
+
 ## Extension screenshots
 
 ### Extended hover menu actions
@@ -91,17 +117,3 @@ Want to support my development? Donate me over [Paypal](https://paypal.me/skinny
 
 ### Workflow editor
 ![Workflow editor](docs/workflow-editor.png)
-
-## Changelog
-
-### [1.0.0]
-
-- Initial release.
-
-<!-- <details> -->
-
-<!-- <summary> -->
-<!-- <h3>Past changelog</h3> -->
-<!-- </summary> -->
-
-<!-- </details> -->
