@@ -2,7 +2,7 @@ import extensions.skdv_comfyui.ui.main as comfyui
 from extensions.skdv_comfyui.config.dir_manager import DirManager
 
 params = {
-    "display_name": "ComfyUI Panel",
+    "display_name": "ComfyUI",
     "is_tab": True,
 }
 
@@ -23,12 +23,13 @@ def custom_css():
 def custom_js():
     return load_skdv_comfyui_resource("skdv_comfyui.js")
 
+
 mount_for_tab = True
 def ui():
     global mount_for_tab
 
     comfyui.mount_ui(mount_for_tab)
 
-    if mount_for_tab: # Made to mount both as Tab and in Extension Block
+    if mount_for_tab:  # Made to mount both as Tab and in Extension Block
         mount_for_tab = False
         params["is_tab"] = False

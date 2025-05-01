@@ -6,7 +6,8 @@ import torch
 from typing import Literal
 from modules import shared
 
-from modules.models import load_model, clear_torch_cache
+from modules.models import load_model
+from modules.torch_utils import clear_torch_cache
 
 from extensions.skdv_comfyui.comfyui.api import ComfyAPI
 

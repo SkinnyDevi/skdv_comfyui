@@ -94,7 +94,7 @@ class ComfyWorkflow:
             CONFIG_HANDLER.shared_negative_prompt + self._negative_prompt,
         )
         injected = injected.replace("%model%", CONFIG_HANDLER.model)
-        injected = injected.replace("%vae%", CONFIG_HANDLER.vae)
+        injected = injected.replace("%vae%", CONFIG_HANDLER.vae or "")
         injected = injected.replace("%sampler%", CONFIG_HANDLER.sampler)
         injected = injected.replace("%scheduler%", CONFIG_HANDLER.scheduler)
         injected = injected.replace("%steps%", str(CONFIG_HANDLER.steps))

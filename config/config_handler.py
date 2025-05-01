@@ -2,7 +2,7 @@ import json
 
 from extensions.skdv_comfyui.config.dir_manager import DirManager
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 """
 This extensions version.
 """
@@ -249,6 +249,8 @@ class ConfigHandler:
 
     @property
     def model(self):
+        if self._model is not None:
+            return self._model.replace("\\", "\\\\")
         return self._model
 
     def set_model(self, new_model: str):
@@ -257,6 +259,8 @@ class ConfigHandler:
 
     @property
     def vae(self):
+        if self._vae is not None:
+            return self._vae.replace("\\", "\\\\")
         return self._vae
 
     def set_vae(self, new_vae: str):

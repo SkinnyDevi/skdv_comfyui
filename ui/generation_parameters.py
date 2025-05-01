@@ -291,7 +291,7 @@ def generation_parameters_ui():
                 label="Last generated seed",
             )
 
-        with gr.Column():
+        with gr.Column(elem_id="skdv_seed_control_buttons"):
             random_seed_button = gr.Button(
                 value="Random",
                 size="lg",

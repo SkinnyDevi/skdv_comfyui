@@ -126,9 +126,9 @@ def generate_image(character: str, positive: str, negative: str, prompt_confirme
     workflow.set_negative_prompt(negative)
     workflow.set_character(character)
 
-    required_gen_fields = [CONFIG_HANDLER.model, CONFIG_HANDLER.vae, CONFIG_HANDLER.sampler, CONFIG_HANDLER.scheduler]
+    required_gen_fields = [CONFIG_HANDLER.model, CONFIG_HANDLER.sampler, CONFIG_HANDLER.scheduler]
     if any(v is None for v in required_gen_fields):
-        gr.Warning("Model, Vae, Sampler and Scheduler need to be selected before generation.")
+        gr.Warning("Model, Sampler and Scheduler need to be selected before generation.")
         return gr.update()
 
     try:
@@ -340,7 +340,7 @@ def mount_generate_events(btn_component: gr.Button, regenerate_event=False, raw_
         outputs=shared_ui["generation_dots"],
         show_progress="hidden",
     ).then(
-        fn=lambda: gr.update(visible=show_prompt_editor_box()),
+        fn=lambda: gr.update(visible=show_prompt_editor_box(confirms_prompt)),
         outputs=shared_ui["confirm_prompts_box"],
     )
 
@@ -369,7 +369,6 @@ def confirm_prompts_for_generation_dialog():
                 lambda: gr.update(visible=False),
                 None,
                 shared_ui["confirm_prompts_box"],
-                #_js=nfn.refresh_downloaded(),
             )
 
             cancel_generation.click(
