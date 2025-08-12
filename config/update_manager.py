@@ -1,7 +1,7 @@
 import json
 import requests
 
-from extensions.skdv_comfyui.config.config_handler import ConfigHandler
+from user_data.extensions.skdv_comfyui.config.config_handler import ConfigHandler
 
 
 class ExtUpdateManager:
@@ -10,7 +10,9 @@ class ExtUpdateManager:
     @staticmethod
     def check_for_updates(config: ConfigHandler):
         try:
-            online_config: dict = requests.get(ExtUpdateManager.__JSON_CHECKER_URL).json()
+            online_config: dict = requests.get(
+                ExtUpdateManager.__JSON_CHECKER_URL
+            ).json()
         except json.JSONDecodeError:
             online_config = {}
 

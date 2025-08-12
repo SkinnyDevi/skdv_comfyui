@@ -1,6 +1,6 @@
 import gradio as gr
 
-from extensions.skdv_comfyui.config.config_handler import ConfigHandler
+from user_data.extensions.skdv_comfyui.config.config_handler import ConfigHandler
 
 config_handler = ConfigHandler.setup()
 

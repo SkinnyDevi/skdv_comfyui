@@ -1,8 +1,8 @@
 import json
 
-from extensions.skdv_comfyui.config.dir_manager import DirManager
+from user_data.extensions.skdv_comfyui.config.dir_manager import DirManager
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 """
 This extensions version.
 """
@@ -61,7 +61,7 @@ DEFAULT_CONFIG = {
     "interactive_mode": False,
     "unload_text_model_before_generating": False,
     "edit_prompt_before_generating": False,
-    "image_descriptor_prompt": DEFAULT_IMAGE_DESCRIPTOR_PROMPT
+    "image_descriptor_prompt": DEFAULT_IMAGE_DESCRIPTOR_PROMPT,
 }
 
 dir_manager = DirManager()
@@ -153,8 +153,12 @@ class ConfigHandler:
         self._unload_text_model_before_generating: bool = (
             self.__config_load_or_defaults("unload_text_model_before_generating")
         )
-        self._edit_prompt_before_generating: bool = self.__config_load_or_defaults("edit_prompt_before_generating")
-        self._image_descriptor_prompt: str = self.__config_load_or_defaults("image_descriptor_prompt")
+        self._edit_prompt_before_generating: bool = self.__config_load_or_defaults(
+            "edit_prompt_before_generating"
+        )
+        self._image_descriptor_prompt: str = self.__config_load_or_defaults(
+            "image_descriptor_prompt"
+        )
 
         self._character_prompts: list[CharacterPrompt] = []
         if ConfigHandler.__loaded_character_prompts is not None:
@@ -197,14 +201,16 @@ class ConfigHandler:
         local_version: str | None = json_data.get("version")
 
         if local_version is not None and __version__ != local_version:
-            print("[skdv_comfyui] Local version and extension version do not match. Correct with extension version.")
+            print(
+                "[skdv_comfyui] Local version and extension version do not match. Correct with extension version."
+            )
             dir_manager.save_to_extension_version(__version__)
 
         return __version__
 
     def __get_local_version(self):
         try:
-            with open(dir_manager.get_extension_version(), 'r') as version_file:
+            with open(dir_manager.get_extension_version(), "r") as version_file:
                 version_dict = json.load(version_file)
         except FileNotFoundError:
             version_dict = None

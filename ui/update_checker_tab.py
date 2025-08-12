@@ -1,10 +1,14 @@
 import gradio as gr
-from extensions.skdv_comfyui.config.config_handler import ConfigHandler
-from extensions.skdv_comfyui.config.update_manager import ExtUpdateManager
 
-from modules.github import clone_or_pull_repository
+from user_data.extensions.skdv_comfyui.config.config_handler import ConfigHandler
+from user_data.extensions.skdv_comfyui.config.update_manager import ExtUpdateManager
+
+from user_data.extensions.skdv_comfyui.config.legacy_github import (
+    clone_or_pull_repository,
+)
 
 CONFIG_HANLDER = ConfigHandler.setup()
+
 
 def create_ext_updater():
     update_btn = gr.Button(
@@ -34,6 +38,7 @@ def create_ext_updater():
         [status, restart_webui],
     )
 
+
 def update_checker_ui():
     if ExtUpdateManager.check_for_updates(CONFIG_HANLDER):
         create_ext_updater()
@@ -45,9 +50,9 @@ def update_checker_ui():
         )
 
     gr.Markdown(
-            f"SKDV ComfyUI Image Generation - Version {CONFIG_HANLDER.version}",
-            elem_classes=["skdv-ext-version"],
-        )
+        f"SKDV ComfyUI Image Generation - Version {CONFIG_HANLDER.version}",
+        elem_classes=["skdv-ext-version"],
+    )
     gr.Markdown(
         "Have any issues or feature request? Report them [here](https://github.com/SkinnyDevi/skdv_comfyui/issues/new/choose).",
         elem_classes=["skdv-ext-version"],

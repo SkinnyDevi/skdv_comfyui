@@ -3,8 +3,8 @@ import mimetypes
 from pathlib import Path
 from random import randint
 
-from extensions.skdv_comfyui.config.config_handler import ConfigHandler
-from extensions.skdv_comfyui.config.dir_manager import DirManager
+from user_data.extensions.skdv_comfyui.config.config_handler import ConfigHandler
+from user_data.extensions.skdv_comfyui.config.dir_manager import DirManager
 
 
 DIR_MANAGER = DirManager()

@@ -1,7 +1,9 @@
 import gradio as gr
-from extensions.skdv_comfyui.config.config_handler import ConfigHandler
+
+from user_data.extensions.skdv_comfyui.config.config_handler import ConfigHandler
 
 CONFIG_HANDLER = ConfigHandler.setup()
+
 
 def image_descriptor_prompt_settings_ui():
     prompt_editor_textarea = gr.TextArea(
@@ -13,5 +15,6 @@ def image_descriptor_prompt_settings_ui():
 
     prompt_editor_textarea.change(
         fn=lambda new: CONFIG_HANDLER.set_image_descriptor_prompt(new),
-        inputs=prompt_editor_textarea
+        inputs=prompt_editor_textarea,
     )
+

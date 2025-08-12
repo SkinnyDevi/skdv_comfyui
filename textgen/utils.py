@@ -9,7 +9,7 @@ from modules import shared
 from modules.models import load_model
 from modules.torch_utils import clear_torch_cache
 
-from extensions.skdv_comfyui.comfyui.api import ComfyAPI
+from user_data.extensions.skdv_comfyui.comfyui.api import ComfyAPI
 
 torch._C._jit_set_profiling_mode(False)
 

@@ -3,9 +3,9 @@ import json
 
 import modules.ui as oobabooga_ui
 
-from extensions.skdv_comfyui.config.config_handler import ConfigHandler
-from extensions.skdv_comfyui.config.dir_manager import DirManager
-from extensions.skdv_comfyui.ui.generation_parameters import (
+from user_data.extensions.skdv_comfyui.config.config_handler import ConfigHandler
+from user_data.extensions.skdv_comfyui.config.dir_manager import DirManager
+from user_data.extensions.skdv_comfyui.ui.generation_parameters import (
     load_local_workflows,
     update_workflow_file,
 )

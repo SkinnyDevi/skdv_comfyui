@@ -1,8 +1,8 @@
 import requests
 
-from extensions.skdv_comfyui.config.config_handler import ConfigHandler
-from extensions.skdv_comfyui.config.dir_manager import DirManager
-from extensions.skdv_comfyui.comfyui.workflow import ComfyWorkflow
+from user_data.extensions.skdv_comfyui.config.config_handler import ConfigHandler
+from user_data.extensions.skdv_comfyui.config.dir_manager import DirManager
+from user_data.extensions.skdv_comfyui.comfyui.workflow import ComfyWorkflow
 
 CONFIG_HANDLER = ConfigHandler.setup()
 DIR_MANAGER = DirManager()
@@ -81,7 +81,8 @@ class ComfyAPI:
             loaded_workflow = json.loads(raw_workflow)
         except json.JSONDecodeError as e:
             raise ValueError(
-                "[skdv_comfyui] The workflow loaded is not valid for generation. Please check the JSON File. JSON Error: " + e.msg
+                "[skdv_comfyui] The workflow loaded is not valid for generation. Please check the JSON File. JSON Error: "
+                + e.msg
             )
 
         response = requests.post(

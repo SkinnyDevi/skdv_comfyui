@@ -1,13 +1,24 @@
 from pathlib import Path
 import json
 
+EXTENSION_PATH = Path("extensions")
+USER_DATA_EXTENSION_PATH = Path("user_data/extensions")
+
+
+def base_ext_path() -> Path:
+    if USER_DATA_EXTENSION_PATH.joinpath("skdv_comfyui").exists():
+        return USER_DATA_EXTENSION_PATH.joinpath("skdv_comfyui")
+
+    return EXTENSION_PATH.joinpath("skdv_comfyui")
+
+
 class DirManager:
     __instance = None
 
-    __EXT_DIR = Path("extensions/skdv_comfyui")
+    __EXT_DIR = base_ext_path()
     __WEB_DIR = __EXT_DIR.joinpath("web")
     __WORKFLOW_DIR = __EXT_DIR.joinpath("workflows")
-    __GENERATED_IMAGES_DIR = __EXT_DIR.joinpath("generated")
+    __GENERATED_IMAGES_DIR = Path("user_data/cache/comfyui/")
     __CONFIG_DIR = __EXT_DIR.joinpath("config")
 
     __VERSION_FILE = __CONFIG_DIR.joinpath("version.json")

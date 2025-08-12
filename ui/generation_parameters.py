@@ -2,10 +2,10 @@ import gradio as gr
 
 import modules.ui as oobabooga_ui
 
-from extensions.skdv_comfyui.comfyui.api import ComfyAPI
-from extensions.skdv_comfyui.config.config_handler import ConfigHandler
-from extensions.skdv_comfyui.config.dir_manager import DirManager
-from extensions.skdv_comfyui.ui.shared import shared_ui
+from user_data.extensions.skdv_comfyui.comfyui.api import ComfyAPI
+from user_data.extensions.skdv_comfyui.config.config_handler import ConfigHandler
+from user_data.extensions.skdv_comfyui.config.dir_manager import DirManager
+from user_data.extensions.skdv_comfyui.ui.shared import shared_ui
 
 dir_manager = DirManager()
 config_handler = ConfigHandler.setup()

@@ -9,12 +9,17 @@ from modules import text_generation
 from modules import shared
 
 
-from extensions.skdv_comfyui.textgen.generate import generate_image_description_from_message
-from extensions.skdv_comfyui.textgen.utils import give_VRAM_priority_to
-from extensions.skdv_comfyui.comfyui.api import ComfyAPI
-from extensions.skdv_comfyui.comfyui.workflow import ComfyWorkflow
-from extensions.skdv_comfyui.config.config_handler import CharacterPrompt, ConfigHandler
-from extensions.skdv_comfyui.ui.shared import shared_ui
+from user_data.extensions.skdv_comfyui.textgen.generate import (
+    generate_image_description_from_message,
+)
+from user_data.extensions.skdv_comfyui.textgen.utils import give_VRAM_priority_to
+from user_data.extensions.skdv_comfyui.comfyui.api import ComfyAPI
+from user_data.extensions.skdv_comfyui.comfyui.workflow import ComfyWorkflow
+from user_data.extensions.skdv_comfyui.config.config_handler import (
+    CharacterPrompt,
+    ConfigHandler,
+)
+from user_data.extensions.skdv_comfyui.ui.shared import shared_ui
 
 CONFIG_HANDLER = ConfigHandler.setup()
 
@@ -39,7 +44,9 @@ def remove_image_from_text(text: str):
 
 
 def remove_alt_text_from_internal(text: str):
-    return text[: text.index("<skdv_comfyui")] + text[text.index("skdv_comfyui/>") + 14 :]
+    return (
+        text[: text.index("<skdv_comfyui")] + text[text.index("skdv_comfyui/>") + 14 :]
+    )
 
 
 def visible_text_contains_comfyui_image(text: str):
@@ -59,12 +66,14 @@ def internal_text_contains_comfyui_image(text: str):
 def create_image_tag(image_path: Path, alt_text: str):
     return f"<img src='file/{image_path.as_posix()}' class='skdv-generated-image' onclick='skdvExpandImage(this)' alt='{html.escape(alt_text)}'/>\n"
 
+
 def set_prompt_raw(send: bool, allow_change: bool):
     if allow_change:
         return
 
     global prompt_editor_with_raw
     prompt_editor_with_raw = send
+
 
 def get_character_prompt(
     prompt_type: Literal["positive", "negative"],
@@ -97,7 +106,9 @@ def save_character_prompt(prompt: str, is_positive: bool, state: dict):
     CONFIG_HANDLER.save_character_prompt(character)
 
 
-def generate_image(character: str, positive: str, negative: str, prompt_confirmed=False):
+def generate_image(
+    character: str, positive: str, negative: str, prompt_confirmed=False
+):
     if CONFIG_HANDLER.edit_prompt_before_generating and not prompt_confirmed:
         return gr.update()
 
@@ -126,9 +137,15 @@ def generate_image(character: str, positive: str, negative: str, prompt_confirme
     workflow.set_negative_prompt(negative)
     workflow.set_character(character)
 
-    required_gen_fields = [CONFIG_HANDLER.model, CONFIG_HANDLER.sampler, CONFIG_HANDLER.scheduler]
+    required_gen_fields = [
+        CONFIG_HANDLER.model,
+        CONFIG_HANDLER.sampler,
+        CONFIG_HANDLER.scheduler,
+    ]
     if any(v is None for v in required_gen_fields):
-        gr.Warning("Model, Sampler and Scheduler need to be selected before generation.")
+        gr.Warning(
+            "Model, Sampler and Scheduler need to be selected before generation."
+        )
         return gr.update()
 
     try:
@@ -158,7 +175,7 @@ def send_image_message(
         new_history = m_chat.load_latest_history(state)
 
     new_history["visible"][-1][1] += image_tag
-    #new_history["internal"][-1][1] += alt_image_text
+    # new_history["internal"][-1][1] += alt_image_text
     return new_history
 
 
@@ -211,7 +228,7 @@ def handle_send_image_message_click(
     chat_html: str,
     history: dict[str, list[list[str]]],
     state: dict,
-    prompt_confirmed = False,
+    prompt_confirmed=False,
 ):
     if CONFIG_HANDLER.edit_prompt_before_generating and not prompt_confirmed:
         return gr.update(), gr.update(), gr.update()
@@ -238,16 +255,26 @@ def handle_send_image_message_click(
         try:
             give_VRAM_priority_to("textgen")
         except ValueError:
-            print("Failed to give VRAM priority to textgen. Did you have a model loaded before generating an image?")
+            print(
+                "Failed to give VRAM priority to textgen. Did you have a model loaded before generating an image?"
+            )
 
     return [new_history, html, ""]
+
 
 def change_main_prompt(new_prompt: str):
     global main_prompt_to_generate
 
     main_prompt_to_generate = new_prompt
 
-def generate_positive_prompt_from_message(history: dict, state: dict, return_raw=False, confirms_prompt=False, regenerate=False):
+
+def generate_positive_prompt_from_message(
+    history: dict,
+    state: dict,
+    return_raw=False,
+    confirms_prompt=False,
+    regenerate=False,
+):
     global main_prompt_to_generate, generated_prompt_has_error
 
     generated_prompt_has_error = False
@@ -264,7 +291,9 @@ def generate_positive_prompt_from_message(history: dict, state: dict, return_raw
         return history["internal"][-1][1]
 
     try:
-        generated_prompt = generate_image_description_from_message(history["internal"][-1][1], state)
+        generated_prompt = generate_image_description_from_message(
+            history["internal"][-1][1], state
+        )
         change_main_prompt(generated_prompt)
     except ValueError as e:
         gr.Warning(e)
@@ -273,42 +302,55 @@ def generate_positive_prompt_from_message(history: dict, state: dict, return_raw
 
     return generated_prompt
 
+
 def show_prompt_editor_box(confirms_prompt=False):
     global generated_prompt_has_error
-    return not confirms_prompt and CONFIG_HANDLER.edit_prompt_before_generating and not generated_prompt_has_error
-
-
-def mount_generate_events(btn_component: gr.Button, regenerate_event=False, raw_prompt=False, confirms_prompt=False):
-    event_dependencies = btn_component.click(
-        lambda: gr.update(visible=True), outputs=shared_ui["generation_dots"], show_progress="hidden"
-    ).then(
-        fn=lambda: set_prompt_raw(raw_prompt, regenerate_event or confirms_prompt)
-    ).then(
-        fn=lambda prompt, state: generate_positive_prompt_from_message(
-            prompt,
-            state,
-            return_raw=raw_prompt,
-            confirms_prompt=confirms_prompt,
-            regenerate=regenerate_event
-        ),
-        inputs=m_utils.gradio("history", "interface_state"),
-        outputs=[shared_ui["prompts_textarea"]]
+    return (
+        not confirms_prompt
+        and CONFIG_HANDLER.edit_prompt_before_generating
+        and not generated_prompt_has_error
     )
-    
+
+
+def mount_generate_events(
+    btn_component: gr.Button,
+    regenerate_event=False,
+    raw_prompt=False,
+    confirms_prompt=False,
+):
+    event_dependencies = (
+        btn_component.click(
+            lambda: gr.update(visible=True),
+            outputs=shared_ui["generation_dots"],
+            show_progress="hidden",
+        )
+        .then(
+            fn=lambda: set_prompt_raw(raw_prompt, regenerate_event or confirms_prompt)
+        )
+        .then(
+            fn=lambda prompt, state: generate_positive_prompt_from_message(
+                prompt,
+                state,
+                return_raw=raw_prompt,
+                confirms_prompt=confirms_prompt,
+                regenerate=regenerate_event,
+            ),
+            inputs=m_utils.gradio("history", "interface_state"),
+            outputs=[shared_ui["prompts_textarea"]],
+        )
+    )
+
     if regenerate_event:
         event_dependencies = event_dependencies.then(
-        fn=handle_remove_latest_image,
-        inputs=m_utils.gradio("unique_id", "display", "history", "interface_state"),
-        outputs=m_utils.gradio("history", "display"),
-        show_progress="hidden",
-    )
+            fn=handle_remove_latest_image,
+            inputs=m_utils.gradio("unique_id", "display", "history", "interface_state"),
+            outputs=m_utils.gradio("history", "display"),
+            show_progress="hidden",
+        )
 
     event_dependencies.then(
         fn=lambda chara, pos, neg: generate_image(
-            chara,
-            pos,
-            neg,
-            prompt_confirmed=confirms_prompt
+            chara, pos, neg, prompt_confirmed=confirms_prompt
         ),
         inputs=[
             shared.gradio["character_menu"],
@@ -346,8 +388,10 @@ def mount_generate_events(btn_component: gr.Button, regenerate_event=False, raw_
 
 
 def confirm_prompts_for_generation_dialog():
-    with gr.Box(visible=False, elem_classes="file-saver", elem_id="skdv_prompt_editor") as shared_ui["confirm_prompts_box"]:
-        shared_ui["prompts_textarea"]  = gr.TextArea(
+    with gr.Box(
+        visible=False, elem_classes="file-saver", elem_id="skdv_prompt_editor"
+    ) as shared_ui["confirm_prompts_box"]:
+        shared_ui["prompts_textarea"] = gr.TextArea(
             label="Edit the prompt before generating:",
             placeholder="Prompt to generate...",
         )
@@ -379,6 +423,7 @@ def confirm_prompts_for_generation_dialog():
 
     return confirm_prompt_generate
 
+
 def comfyui_hover_menu_buttons_ui():
     hover_menu_generate_button = gr.Button(
         "Gen. image: last message", elem_id="skdv_comfyui_button_generate"
@@ -397,7 +442,8 @@ def comfyui_hover_menu_buttons_ui():
     )
 
     hover_menu_stop_prompt_generation = gr.Button(
-        "Stop image prompt generation", elem_id="skdv_comfyui_button_stop_prompt_generation"
+        "Stop image prompt generation",
+        elem_id="skdv_comfyui_button_stop_prompt_generation",
     )
 
     mount_generate_events(hover_menu_generate_button)
@@ -411,9 +457,8 @@ def comfyui_hover_menu_buttons_ui():
         show_progress="hidden",
     )
 
-    hover_menu_stop_prompt_generation.click(
-        fn=text_generation.stop_everything_event
-    )
+    hover_menu_stop_prompt_generation.click(fn=text_generation.stop_everything_event)
+
 
 def comfyui_chat_panel_ui():
     shared_ui["generation_dots"] = gr.HTML(
@@ -468,7 +513,9 @@ def comfyui_chat_panel_ui():
         )
 
         edit_prompt_before_generation_checkbox.input(
-            fn=lambda checked: CONFIG_HANDLER.set_edit_prompt_before_generating(checked),
+            fn=lambda checked: CONFIG_HANDLER.set_edit_prompt_before_generating(
+                checked
+            ),
             inputs=edit_prompt_before_generation_checkbox,
         )
 
@@ -482,7 +529,10 @@ def comfyui_chat_panel_ui():
                 get_character_prompt("negative", chara),
             ),
             inputs=shared.gradio["character_menu"],
-            outputs=[shared_ui["character_positive_prompt_input"], shared_ui["character_negative_prompt_input"]],
+            outputs=[
+                shared_ui["character_positive_prompt_input"],
+                shared_ui["character_negative_prompt_input"],
+            ],
         )
 
         shared_ui["character_positive_prompt_input"].change(
@@ -497,5 +547,3 @@ def comfyui_chat_panel_ui():
         )
 
     mount_generate_events(confirm_generation_dialog_button, confirms_prompt=True)
-
-
